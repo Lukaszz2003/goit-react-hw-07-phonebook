@@ -11,8 +11,7 @@ const ContactList = () => {
 
   useEffect(() => {
     dispatch(getContacts());
-    // eslint-disable-next-line
-  }, []);
+  }, [dispatch]);
 
   return (
     <ul className={s.list}>

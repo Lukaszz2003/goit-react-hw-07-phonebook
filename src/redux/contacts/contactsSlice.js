@@ -1,6 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getContacts, addContacts, removeContacts } from './contactsOperations';
 
+const handlePending = (state, { payload }) => {
+  state.isLoading = true;
+  state.error = null;
+};
+
+const handleRejected = (state, { payload }) => {
+  state.isLoading = false;
+  state.error = payload;
+};
+
 const contactsSlice = createSlice({
   name: 'items',
   initialState: {
@@ -9,6 +19,7 @@ const contactsSlice = createSlice({
     error: null,
     filter: '',
   },
+
   reducers: {
     changeFilter(state, { payload }) {
       return { ...state, filter: payload };
@@ -16,38 +27,22 @@ const contactsSlice = createSlice({
   },
 
   extraReducers: {
-    [getContacts.pending]: (state, { payload }) => {
-      state.isLoading = true;
-      state.error = null;
-    },
-    [getContacts.rejected]: (state, { payload }) => {
-      state.isLoading = false;
-      state.error = payload;
-    },
+    [getContacts.pending]: handlePending,
+    [getContacts.rejected]: handleRejected,
     [getContacts.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.items = payload;
     },
-    [addContacts.pending]: (state, { payload }) => {
-      state.isLoading = true;
-      state.error = null;
-    },
-    [addContacts.rejected]: (state, { payload }) => {
-      state.isLoading = false;
-      state.error = payload;
-    },
+
+    [addContacts.pending]: handlePending,
+    [addContacts.rejected]: handleRejected,
     [addContacts.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.items = state.items = [...state.items, payload];
     },
-    [removeContacts.pending]: (state, { payload }) => {
-      state.isLoading = true;
-      state.error = null;
-    },
-    [removeContacts.rejected]: (state, { payload }) => {
-      state.isLoading = false;
-      state.error = payload;
-    },
+
+    [removeContacts.pending]: handlePending,
+    [removeContacts.rejected]: handleRejected,
     [removeContacts.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.items = state.items.filter(item => item.id !== payload.id);
